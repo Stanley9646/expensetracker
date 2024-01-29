@@ -50,5 +50,32 @@ ExpenseSchema.findByIdAndDelete(id)
     res.status(500).json({message : 'Internal server error'})
 })
   } 
+  const updateExpense = async (req, res) => {
+    const { id } = req.params;
+    const { title, amount, category, description, date } = req.body;
+  
+    try {
+      const updatedExpense = await ExpenseSchema.findByIdAndUpdate(
+        id,
+        {
+          title,
+          amount,
+          category,
+          description,
+          date,
+        },
+        { new: true }
+      );
+  
+      if (!updatedExpense) {
+        return res.status(404).json({ message: 'Expense not found' });
+      }
+  
+      res.status(200).json({ message: 'Expense updated', updatedExpense });
+    } catch (error) {
+      console.error('Error updating expense:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
 
-module.exports = {addExpense , getExpenses , deleteExpense}
+module.exports = {addExpense , getExpenses , deleteExpense , updateExpense}
